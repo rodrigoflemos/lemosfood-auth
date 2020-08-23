@@ -30,14 +30,19 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		clients
 			.inMemory()
 				.withClient("lemosfood-web")
-					.secret(passwordEncoder.encode("web123"))
-					.authorizedGrantTypes("password","refresh_token")
-					.scopes("write", "read")
-					.accessTokenValiditySeconds(6 * 60 * 60)
-					.refreshTokenValiditySeconds(60 * 24 * 60 * 60)
+				.secret(passwordEncoder.encode("web123"))
+				.authorizedGrantTypes("password","refresh_token")
+				.scopes("write", "read")
+				.accessTokenValiditySeconds(6 * 60 * 60)
+				.refreshTokenValiditySeconds(60 * 24 * 60 * 60)
+			.and()
+				.withClient("faturamento")
+				.secret(passwordEncoder.encode("faturamento123"))
+				.authorizedGrantTypes("client_credentials")
+				.scopes("write", "read")
 			.and()
 				.withClient("checktoken")
-					.secret(passwordEncoder.encode("123"));
+				.secret(passwordEncoder.encode("123"));
 	}
 	
 	@Override
