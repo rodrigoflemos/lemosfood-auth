@@ -41,6 +41,25 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 				.refreshTokenValiditySeconds(60 * 24 * 60 * 60)
 			
 			.and()//http://localhost:8081/oauth/authorize?response_type=code&client_id=foodanalytics&state=abc&redirect_uri=http://aplicacao-cliente
+			
+			/* Com PKCE plain: 
+			 * 
+			 * Code Verifier: teste123
+			 * Code Challenge: teste123 
+			 * 
+			 * http://localhost:8081/oauth/authorize?response_type=code&client_id=foodanalytics
+			&redirect_uri=http://aplicacao-cliente&code_challenge=teste123&code_challenge_method=plain
+			
+			* Com PKCE sha256: 
+			* 
+			* Code Verifier: teste123
+			* Code Challenge: base64url((sha256("teste123"))) = KJFg2w2fOfmuF1TE7JwW-QtQ4y4JxftUga5kKz09GjY
+			* 
+			* http://localhost:8081/oauth/authorize?response_type=code&client_id=foodanalytics
+			&redirect_uri=http://aplicacao-cliente&code_challenge=KJFg2w2fOfmuF1TE7JwW-QtQ4y4JxftUga5kKz09GjY&code_challenge_method=s256
+			*
+			*/
+
 				.withClient("foodanalytics")
 				.secret(passwordEncoder.encode("food123"))
 				.authorizedGrantTypes("authorization_code")
