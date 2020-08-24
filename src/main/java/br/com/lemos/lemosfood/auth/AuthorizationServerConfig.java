@@ -36,10 +36,16 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 				.accessTokenValiditySeconds(6 * 60 * 60)
 				.refreshTokenValiditySeconds(60 * 24 * 60 * 60)
 			
-			.and()
+			.and()//http://localhost:8081/oauth/authorize?response_type=code&client_id=foodanalytics&state=abc&redirect_uri=http://aplicacao-cliente
 				.withClient("foodanalytics")
 				.secret(passwordEncoder.encode("food123"))
 				.authorizedGrantTypes("authorization_code")
+				.scopes("write", "read")
+				.redirectUris("http://aplicacao-cliente")
+				
+			.and()//http://localhost:8081/oauth/authorize?response_type=token&client_id=webadmin&state=abc&redirect_uri=http://aplicacao-cliente
+				.withClient("webadmin")
+				.authorizedGrantTypes("implicit")
 				.scopes("write", "read")
 				.redirectUris("http://aplicacao-cliente")
 				
@@ -48,6 +54,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 				.secret(passwordEncoder.encode("faturamento123"))
 				.authorizedGrantTypes("client_credentials")
 				.scopes("write", "read")
+				
 			.and()
 				.withClient("checktoken")
 				.secret(passwordEncoder.encode("check123"));
