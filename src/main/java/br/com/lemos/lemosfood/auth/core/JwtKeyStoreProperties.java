@@ -1,4 +1,4 @@
-package br.com.lemos.lemosfood.auth;
+package br.com.lemos.lemosfood.auth.core;
 
 import javax.validation.constraints.NotBlank;
 

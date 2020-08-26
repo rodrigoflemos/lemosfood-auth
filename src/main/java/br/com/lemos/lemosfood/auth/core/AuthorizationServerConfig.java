@@ -1,4 +1,4 @@
-package br.com.lemos.lemosfood.auth;
+package br.com.lemos.lemosfood.auth.core;
 
 import java.util.Arrays;
 
@@ -119,7 +119,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		
 		var approvalStore = new TokenApprovalStore();
 		approvalStore.setTokenStore(tokenStore);
-		return approvalStore(tokenStore);
+		return approvalStore;
 	}
 	
 	@Bean

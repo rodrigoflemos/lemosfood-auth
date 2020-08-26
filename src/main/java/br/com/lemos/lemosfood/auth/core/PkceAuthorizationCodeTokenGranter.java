@@ -1,4 +1,4 @@
-package br.com.lemos.lemosfood.auth;
+package br.com.lemos.lemosfood.auth.core;
 // Solução baseada em: https://github.com/spring-projects/spring-security-oauth/pull/675/files
 
 import java.security.MessageDigest;
