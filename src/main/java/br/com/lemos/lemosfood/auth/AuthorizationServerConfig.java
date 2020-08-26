@@ -32,6 +32,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Autowired
 	private UserDetailsService userDetailsService;
 	
+	@Autowired
+	private JwtKeyStoreProperties jwtKeyStoreProperties;   
+	
 //	@Autowired
 //	private RedisConnectionFactory redisConnectionFactory;
 		
@@ -108,20 +111,19 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	}
 	
 	@Bean
-	public JwtAccessTokenConverter jwtAccessTokenConverter () {
-		var jwtAccessTokenConverter = new JwtAccessTokenConverter();
-//		jwtAccessTokenConverter.setSigningKey("as9d879sdf7asdf78a9dsadf87987fd89s87fs9a987s98f");
-		
-		var jksResource = new ClassPathResource("keystores/lemosfood.jks");
-		var keyStorePass = "123456";
-		var keyPairAlias = "lemosfood";
-		
-		var keyStoreKeyFactory = new KeyStoreKeyFactory(jksResource, keyStorePass.toCharArray());
-		var keyPair = keyStoreKeyFactory.getKeyPair(keyPairAlias);
-		
-		jwtAccessTokenConverter.setKeyPair(keyPair);
-		
-		return jwtAccessTokenConverter;
+	public JwtAccessTokenConverter jwtAccessTokenConverter() {
+	    var jwtAccessTokenConverter = new JwtAccessTokenConverter();
+	    
+	    var jksResource = new ClassPathResource(jwtKeyStoreProperties.getPath());
+	    var keyStorePass = jwtKeyStoreProperties.getPassword();
+	    var keyPairAlias = jwtKeyStoreProperties.getKeypairAlias();
+	    
+	    var keyStoreKeyFactory = new KeyStoreKeyFactory(jksResource, keyStorePass.toCharArray());
+	    var keyPair = keyStoreKeyFactory.getKeyPair(keyPairAlias);
+	    
+	    jwtAccessTokenConverter.setKeyPair(keyPair);
+	    
+	    return jwtAccessTokenConverter;
 	}
 	
 	private TokenGranter tokenGranter(AuthorizationServerEndpointsConfigurer endpoints) {
