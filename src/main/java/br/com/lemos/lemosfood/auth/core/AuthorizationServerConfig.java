@@ -50,7 +50,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 				.withClient("lemosfood-web")
 				.secret(passwordEncoder.encode("web123"))
 				.authorizedGrantTypes("password","refresh_token")
-				.scopes("write", "read")
+				.scopes("WRITE", "READ")
 				.accessTokenValiditySeconds(6 * 60 * 60)
 				.refreshTokenValiditySeconds(60 * 24 * 60 * 60)
 			
@@ -77,20 +77,20 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 				.withClient("foodanalytics")
 				.secret(passwordEncoder.encode(""))
 				.authorizedGrantTypes("authorization_code")
-				.scopes("write", "read")
+				.scopes("WRITE", "READ")
 				.redirectUris("http://aplicacao-cliente")
 				
 			.and()//http://localhost:8081/oauth/authorize?response_type=token&client_id=webadmin&state=abc&redirect_uri=http://aplicacao-cliente
 				.withClient("webadmin")
 				.authorizedGrantTypes("implicit")
-				.scopes("write", "read")
+				.scopes("WRITE", "READ")
 				.redirectUris("http://aplicacao-cliente")
 				
 			.and()
 				.withClient("faturamento")
 				.secret(passwordEncoder.encode("faturamento123"))
 				.authorizedGrantTypes("client_credentials")
-				.scopes("write", "read")
+				.scopes("WRITE", "READ")
 				
 			.and()
 				.withClient("checktoken")
