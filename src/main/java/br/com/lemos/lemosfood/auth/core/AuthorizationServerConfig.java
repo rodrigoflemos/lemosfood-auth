@@ -2,13 +2,14 @@ package br.com.lemos.lemosfood.auth.core;
 
 import java.util.Arrays;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -28,16 +29,16 @@ import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFacto
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 	
 	@Autowired
-	private PasswordEncoder passwordEncoder;
-	
-	@Autowired
 	private AuthenticationManager authenticationManager;
 	
 	@Autowired
 	private UserDetailsService userDetailsService;
 	
 	@Autowired
-	private JwtKeyStoreProperties jwtKeyStoreProperties;   
+	private JwtKeyStoreProperties jwtKeyStoreProperties;
+	
+	@Autowired
+	private DataSource dataSource;
 	
 //	@Autowired
 //	private RedisConnectionFactory redisConnectionFactory;
@@ -45,56 +46,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	//Configura os detalhes dos clients 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients
-			.inMemory()
-				.withClient("lemosfood-web")
-				.secret(passwordEncoder.encode("web123"))
-				.authorizedGrantTypes("password","refresh_token")
-				.scopes("WRITE", "READ")
-				.accessTokenValiditySeconds(6 * 60 * 60)
-				.refreshTokenValiditySeconds(60 * 24 * 60 * 60)
-			
-			.and()//http://localhost:8081/oauth/authorize?response_type=code&client_id=foodanalytics&state=abc&redirect_uri=http://aplicacao-cliente
-			
-			/* Com PKCE plain: 
-			 * 
-			 * Code Verifier: teste123
-			 * Code Challenge: teste123 
-			 * 
-			 * http://localhost:8081/oauth/authorize?response_type=code&client_id=foodanalytics
-			&redirect_uri=http://aplicacao-cliente&code_challenge=teste123&code_challenge_method=plain
-			
-			* Com PKCE sha256: 
-			* 
-			* Code Verifier: teste123
-			* Code Challenge: base64url((sha256("teste123"))) = KJFg2w2fOfmuF1TE7JwW-QtQ4y4JxftUga5kKz09GjY
-			* 
-			* http://localhost:8081/oauth/authorize?response_type=code&client_id=foodanalytics
-			&redirect_uri=http://aplicacao-cliente&code_challenge=KJFg2w2fOfmuF1TE7JwW-QtQ4y4JxftUga5kKz09GjY&code_challenge_method=s256
-			*
-			*/
-
-				.withClient("foodanalytics")
-				.secret(passwordEncoder.encode(""))
-				.authorizedGrantTypes("authorization_code")
-				.scopes("WRITE", "READ")
-				.redirectUris("http://aplicacao-cliente")
-				
-			.and()//http://localhost:8081/oauth/authorize?response_type=token&client_id=webadmin&state=abc&redirect_uri=http://aplicacao-cliente
-				.withClient("webadmin")
-				.authorizedGrantTypes("implicit")
-				.scopes("WRITE", "READ")
-				.redirectUris("http://aplicacao-cliente")
-				
-			.and()
-				.withClient("faturamento")
-				.secret(passwordEncoder.encode("faturamento123"))
-				.authorizedGrantTypes("client_credentials")
-				.scopes("WRITE", "READ")
-				
-			.and()
-				.withClient("checktoken")
-				.secret(passwordEncoder.encode("check123"));
+		clients.jdbc(dataSource);
 	}
 	
 	@Override
